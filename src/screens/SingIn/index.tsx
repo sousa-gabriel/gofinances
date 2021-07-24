@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import AppleSVG from '../../Assets/apple.svg';
 import GoogleSVG from '../../Assets/google.svg';
 import LogoSVG from '../../Assets/logo.svg';
@@ -18,15 +18,23 @@ import {
 } from './styles';
 
 export function SingIn() {
-    const {singInWithGoogle} = useAuth()
+    const {signInWithGoogle, signInWithApple } = useAuth()
 
-    async function handleSingInWithGoogle(){
+    async function handlesingInWithGoogle(){
         try {
-            await singInWithGoogle();
-
+            await signInWithGoogle();
         } catch (error) {
             console.log(error)
             Alert.alert('Não foi possivel conectar-se a sua conta Google')
+        }
+    }
+    
+    async function handlesigInWithApple(){
+        try {
+            await signInWithApple();
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Não foi possivel conectar-se a sua conta Apple')
         }
     }
     return (
@@ -53,11 +61,12 @@ export function SingIn() {
                     <SingInSocialButton
                         title='Entrar com o Google'
                         svg={GoogleSVG}
-                        onPress={handleSingInWithGoogle}
+                        onPress={handlesingInWithGoogle}
                     />
                     <SingInSocialButton
                         title='Entrar com Apple'
                         svg={AppleSVG}
+                        onPress={handlesigInWithApple}
                     />
                 </FooterWrapper>
             </Footer>

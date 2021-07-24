@@ -22,6 +22,7 @@ import {
 } from './styles';
 import { useFocusEffect } from '@react-navigation/native';
 import theme from '../../global/styles/theme';
+import { useAuth } from '../../hooks/Auth';
 export interface DataListProps extends TransactionCardProps {
     id: string;
 }
@@ -39,6 +40,7 @@ export function Dashboard() {
     const [transactions, setTransactions] = useState<DataListProps[]>([]);
     const [highlightData, setHighlightDate] = useState<HighlightData>({} as HighlightData)
     const [isLoading, setIsLoading] = useState(true);
+    const {signOut, user} = useAuth();
 
     // validando qual a ultima data de saldo positivo
     function getLastTransactionDate(collection: DataListProps[], type: 'positive' | 'negative') {
@@ -134,13 +136,13 @@ export function Dashboard() {
                     <Header>
                         <UserWrapper>
                             <UserInfo>
-                                <Photo source={{ uri: 'https://avatars.githubusercontent.com/u/44657244?v=4' }} />
+                                <Photo source={{ uri: user.photo }} />
                                 <User>
                                     <UserGreeting>Olá,</UserGreeting>
-                                    <UserName>Rodrigo</UserName>
+                                    <UserName>{user.name}</UserName>
                                 </User>
                             </UserInfo>
-                            <LogoutButton onPress={() => { console.log('Saindo') }}>
+                            <LogoutButton onPress={signOut}>
                                 <Icon name="power" />
                             </LogoutButton>
                         </UserWrapper>

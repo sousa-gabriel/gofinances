@@ -28,6 +28,8 @@ interface IAthContextData {
     user: User;
     signInWithGoogle(): Promise<void>;
     signInWithApple(): Promise<void>;
+    signOut(): Promise<void>;
+    userStorageLoading: boolean;
 }
 
 const AuthContext = createContext({} as IAthContextData);
@@ -81,7 +83,7 @@ function AuthProvider({ children }: AuthProps) {
                     id: String(credential.user),
                     email: credential.email!,
                     name: credential.fullName?.givenName!,
-                    photo: undefined
+                    photo: `https://ui-avatars.com/api/?name=${credential.fullName?.givenName!}&length=1`
                 }
                 setUser(userLogged);
                 await AsyncStorage.setItem(userStorgeKey, JSON.stringify(userLogged));
@@ -101,12 +103,23 @@ function AuthProvider({ children }: AuthProps) {
         setUserStorageLoading(false);
     }
 
+    async function signOut() {
+        setUser({} as User)
+        await AsyncStorage.removeItem(userStorgeKey)
+    }
+
     useEffect(()=>{
         loadUserStorageDate()
     },[])
 
 return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, signInWithApple }}>
+    <AuthContext.Provider value={{ 
+        user, 
+        signInWithGoogle, 
+        signInWithApple, 
+        signOut, 
+        userStorageLoading, 
+    }}>
         {children}
     </AuthContext.Provider>
 )

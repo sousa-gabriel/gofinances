@@ -3,7 +3,7 @@ import AppleSVG from '../../Assets/apple.svg';
 import GoogleSVG from '../../Assets/google.svg';
 import LogoSVG from '../../Assets/logo.svg';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { Alert } from 'react-native';
+import { ActivityIndicator, Alert } from 'react-native';
 
 import { SingInSocialButton } from '../../Components/SingInSocialButton';
 import { useAuth } from '../../hooks/Auth';
@@ -16,25 +16,34 @@ import {
     Footer,
     FooterWrapper,
 } from './styles';
+import { useState } from 'react';
+import theme from '../../global/styles/theme';
 
 export function SingIn() {
+    const [isLoading, setIsLoading] = useState(false);
     const {signInWithGoogle, signInWithApple } = useAuth()
 
     async function handlesingInWithGoogle(){
         try {
-            await signInWithGoogle();
+            setIsLoading(true);
+            return await signInWithGoogle();
         } catch (error) {
             console.log(error)
             Alert.alert('Não foi possivel conectar-se a sua conta Google')
+        } finally{
+            setIsLoading(false);
         }
     }
     
     async function handlesigInWithApple(){
         try {
-            await signInWithApple();
+            setIsLoading(true);
+            return await signInWithApple();
         } catch (error) {
             console.log(error)
             Alert.alert('Não foi possivel conectar-se a sua conta Apple')
+        } finally{
+            setIsLoading(false);
         }
     }
     return (
@@ -69,8 +78,10 @@ export function SingIn() {
                         onPress={handlesigInWithApple}
                     />
                 </FooterWrapper>
+                {
+                    isLoading && <ActivityIndicator size='large' color={theme.colors.shape}/>
+                }
             </Footer>
-
         </Container>
     );
 }

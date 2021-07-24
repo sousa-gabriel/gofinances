@@ -7,7 +7,7 @@ import { StatusBar } from 'react-native';
 import { Routes } from './src/Routes';
 import theme from './src/global/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import { AuthProvider } from './src/hooks/Auth';
+import { AuthProvider, useAuth } from './src/hooks/Auth';
 import AppLoading from 'expo-app-loading';
 
 import {
@@ -23,7 +23,9 @@ export default function App() {
     Roboto_500Medium,
     Roboto_700Bold,
   });
-  if (!fontsLoaded) {
+  const {userStorageLoading} = useAuth();
+
+  if (!fontsLoaded || userStorageLoading) {
     return <AppLoading />
   }
   return (

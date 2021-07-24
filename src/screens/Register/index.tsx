@@ -17,6 +17,7 @@ import {
     Alert
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
+import { useAuth } from "../../hooks/Auth";
 
 interface FormData {
     name: string;
@@ -40,7 +41,7 @@ export function Register() {
     const [category, setCategory] = useState({
         key: 'category',
         name: 'Categoria',
-    });
+    });    
     const {
         control,
         handleSubmit,
@@ -49,6 +50,7 @@ export function Register() {
     } = useForm({
         resolver: yupResolver(schema)
     })
+    const {user} = useAuth();
 
     async function handleRegister(form: FormData) {
         if(!transactionType){
@@ -68,7 +70,7 @@ export function Register() {
         }
         //Para usar o AsyncStorage, definimos uma chave e passamos um texto por isso JSON.stringfy
         try {
-            const dataKey='@gofinances:transactions';
+            const dataKey=`@gofinances:transactions_user:${user.id}`;
 
             const response = await AsyncStorage.getItem(dataKey);
             const responseCurrent = response ? JSON.parse(response) : [];
@@ -100,9 +102,11 @@ export function Register() {
     function handleOpenModalCategorySelect() {
         setCategoryModalOpen(true)
     }
+
     function handleCloseModalCategorySelect() {
         setCategoryModalOpen(false)
     }
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Container>

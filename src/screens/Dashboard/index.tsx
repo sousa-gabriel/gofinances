@@ -49,6 +49,11 @@ export function Dashboard() {
             .filter(transaction => transaction.type === type)
             .map(transaction => new Date(transaction.date).getTime()))
 
+        const collectionFilttered = collection.filter(transaction => transaction.type === type);
+        if(collectionFilttered.length === 0){
+            return 0
+        }
+
         const lastTransactionformatted = new Date(lastTransaction)
 
         return ` ${lastTransactionformatted.getDate()} de ${lastTransactionformatted.toLocaleString('pt-BR', { month: 'long' })}
@@ -56,7 +61,7 @@ export function Dashboard() {
     }
 
     async function LoadTransactions() {
-        const dataKey = '@gofinances:transactions';
+        const dataKey = `@gofinances:transactions_user:${user.id}`;
         const response = await AsyncStorage.getItem(dataKey);
         const transactions = response ? JSON.parse(response) : [];
 
@@ -103,21 +108,27 @@ export function Dashboard() {
                     style: 'currency',
                     currency: 'BRL'
                 }),
-                lastTransaction: `Última entrada${lastTransactionsEntries}`
+                lastTransaction: lastTransactionsEntries === 0 
+                ? 'Não há transações de entrada'
+                : `Última entrada${lastTransactionsEntries}`
             },
             expensive: {
                 amount: expensiveTotal.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                 }),
-                lastTransaction: `Última saída ${lastTransactionsExpensives}`
+                lastTransaction: lastTransactionsEntries === 0 
+                ? 'Não há transações de saida'
+                :`Última saída ${lastTransactionsExpensives}`
             },
             total: {
                 amount: total.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                 }),
-                lastTransaction: totalInterval
+                lastTransaction: lastTransactionsEntries === 0 
+                ? 'Não há transações realizadas'
+                : totalInterval
             }
         })
         setIsLoading(false);

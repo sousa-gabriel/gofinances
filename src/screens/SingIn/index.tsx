@@ -3,7 +3,7 @@ import AppleSVG from '../../Assets/apple.svg';
 import GoogleSVG from '../../Assets/google.svg';
 import LogoSVG from '../../Assets/logo.svg';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { ActivityIndicator, Alert } from 'react-native';
+import { ActivityIndicator, Alert, Platform } from 'react-native';
 
 import { SingInSocialButton } from '../../Components/SingInSocialButton';
 import { useAuth } from '../../hooks/Auth';
@@ -30,7 +30,6 @@ export function SingIn() {
         } catch (error) {
             console.log(error)
             Alert.alert('Não foi possivel conectar-se a sua conta Google')
-        } finally{
             setIsLoading(false);
         }
     }
@@ -40,9 +39,8 @@ export function SingIn() {
             setIsLoading(true);
             return await signInWithApple();
         } catch (error) {
-            console.log(error)
-            Alert.alert('Não foi possivel conectar-se a sua conta Apple')
-        } finally{
+            console.log(error);
+            Alert.alert('Não foi possivel conectar-se a sua conta Apple');
             setIsLoading(false);
         }
     }
@@ -72,11 +70,15 @@ export function SingIn() {
                         svg={GoogleSVG}
                         onPress={handlesingInWithGoogle}
                     />
-                    <SingInSocialButton
-                        title='Entrar com Apple'
-                        svg={AppleSVG}
-                        onPress={handlesigInWithApple}
-                    />
+                    { 
+                        Platform.OS === 'ios' &&
+                        <SingInSocialButton
+                            title='Entrar com Apple'
+                            svg={AppleSVG}
+                            onPress={handlesigInWithApple}
+                        />
+                    }
+                    
                 </FooterWrapper>
                 {
                     isLoading && <ActivityIndicator size='large' color={theme.colors.shape}/>
